@@ -785,7 +785,7 @@ ReqQryTradingAccount();
 }
 
 void MainWindow::AppendLog(QString msg){
-emit send_AppendMsg(msg);
+  emit send_AppendMsg(msg);
 }
 
 void MainWindow::on_AppendMsg(QString msg){

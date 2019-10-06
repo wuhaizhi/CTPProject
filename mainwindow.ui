@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>905</width>
-    <height>574</height>
+    <width>899</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>CTP</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="btn_login">
@@ -82,8 +82,8 @@
    <widget class="QTextEdit" name="edt_log">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>130</y>
+      <x>70</x>
+      <y>90</y>
       <width>811</width>
       <height>351</height>
      </rect>
@@ -95,7 +95,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>905</width>
+     <width>899</width>
      <height>23</height>
     </rect>
    </property>
@@ -109,6 +109,11 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionlogin">
+   <property name="text">
+    <string>login</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
