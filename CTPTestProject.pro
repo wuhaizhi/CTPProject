@@ -27,13 +27,22 @@ CONFIG += c++11
 SOURCES += \
         logindialog.cpp \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        traderapi.cpp \
+        traderspi.cpp \
+        yg_config.cpp
 
 HEADERS += \
         logindialog.h \
-        mainwindow.h
+        main.h \
+        mainwindow.h \
+        trade_var.h \
+        traderapi.h \
+        traderspi.h \
+        yg_config.h
 
 FORMS += \
+        dialog1.ui \
         logindialog.ui \
         mainwindow.ui
 
@@ -55,3 +64,6 @@ else:unix: LIBS += -L$$PWD/TradeApi/win32/ -lthosttraderapi_se
 
 INCLUDEPATH += $$PWD/TradeApi/win32
 DEPENDPATH += $$PWD/TradeApi/win32
+
+DISTFILES += \
+    SysConfig.ini

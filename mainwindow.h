@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "TradeApi/win32/ThostFtdcTraderApi.h"
 #include "TradeApi/win32/ThostFtdcMdApi.h"
+#include "traderapi.h"
+#include "traderspi.h"
 
 namespace Ui {
 class MainWindow;
@@ -14,18 +16,15 @@ class MainWindow : public QMainWindow, public CThostFtdcTraderSpi, public CThost
     Q_OBJECT
 
 private:
-    CThostFtdcTraderApi* m_ptraderapi;
     TThostFtdcBrokerIDType	m_BrokerID;
     TThostFtdcUserIDType	m_UserID;
     TThostFtdcInvestorIDType m_InvestorID;
     TThostFtdcPasswordType	m_Password;
     TThostFtdcAuthCodeType	m_AuthCode;
     TThostFtdcAppIDType	m_AppID;
-
-    void InitCTP();
-
-    int UserLogin();
-    int Authenticate();
+private:
+    CTraderApi *m_tradeApi;
+    CTraderSpi *m_TradeSpi;
 
 
     // 重写CThostFtdcTraderSpi方法
@@ -62,6 +61,8 @@ private:
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    void setTradeApi(CTraderApi *TradeApi, CTraderSpi *ATradeSpi);
 
 private slots:
     void on_btn_login_clicked();

@@ -14,30 +14,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(send_AppendMsg(QString)), this, SLOT(on_AppendMsg(QString)));
 }
 
-
-void MainWindow::InitCTP(){
-    QDir* aDir = new QDir();
-    if (!aDir->exists("flow\\Trade"))
-    {
-        aDir->mkdir("flow\\Trade");
-    }
-
-
-    strcpy_s(m_BrokerID, "9999");
-    strcpy_s(m_InvestorID, "142162");
-    strcpy_s(m_UserID,  "142162");
-    strcpy_s(m_Password, "wu64117467");
-    strcpy_s(m_AppID, "simnow_client_test");
-    strcpy_s(m_AuthCode, "0000000000000000");
-
-    m_ptraderapi = CThostFtdcTraderApi::CreateFtdcTraderApi("flow\\Trade\\");
-    qDebug("%s\n", m_ptraderapi->GetApiVersion());
-    m_ptraderapi->RegisterSpi(this);
-    m_ptraderapi->SubscribePublicTopic(THOST_TERT_QUICK);
-    m_ptraderapi->SubscribePrivateTopic(THOST_TERT_QUICK);
-    m_ptraderapi->RegisterFront(const_cast<char *>("tcp://180.168.146.187:10130"));
-    m_ptraderapi->Init();
+void MainWindow::setTradeApi(CTraderApi *TradeApi, CTraderSpi *ATradeSpi){
+    m_tradeApi = TradeApi;
+    m_TradeSpi = ATradeSpi;
+    m_TradeSpi->RegisterSpi(this);
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -46,38 +28,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btn_login_clicked()
 {
-InitCTP();
-}
 
-int MainWindow::UserLogin(){
-   qDebug() << "用户登陆" << endl;
-
-   CThostFtdcReqUserLoginField reqUserLogin;
-   memset(&reqUserLogin, 0, sizeof(reqUserLogin));
-
-   strcpy_s(reqUserLogin.BrokerID, m_BrokerID);
-   strcpy_s(reqUserLogin.UserID, m_UserID);
-   strcpy_s(reqUserLogin.Password, m_Password);
-   return m_ptraderapi->ReqUserLogin(&reqUserLogin, 1);
-}
-
-int MainWindow::Authenticate(){
-    CThostFtdcReqAuthenticateField field;
-    memset(&field, 0, sizeof(field));
-    strcpy_s(field.BrokerID, m_BrokerID);
-    strcpy_s(field.UserID, m_UserID);
-    strcpy_s(field.AppID, m_AppID);
-    strcpy_s(field.AuthCode, m_AuthCode);
-    return m_ptraderapi->ReqAuthenticate(&field, 2);
 }
 
 
 void MainWindow::OnFrontConnected(){
-    qDebug("OnFrontConnected");
-    qDebug("%s\n", m_ptraderapi->GetApiVersion());
 
-    //如果连接成功就进行认证
-    Authenticate();
 }
 
 void MainWindow::OnFrontDisconnected(int nReason){
@@ -85,17 +41,7 @@ void MainWindow::OnFrontDisconnected(int nReason){
 }
 
 void MainWindow::OnRspAuthenticate(CThostFtdcRspAuthenticateField *pRspAuthenticateField, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast){
-    if(pRspAuthenticateField){
-        if (pRspInfo->ErrorID == 0){
 
-            AppendLog("OnRspAuthenticate:" +QString::fromLocal8Bit(pRspInfo->ErrorMsg));
-            UserLogin();
-        }else {
-
-            AppendLog("OnRspAuthenticate:" +QString::fromLocal8Bit(pRspInfo->ErrorMsg));
-        }
-
-    }
 }
 
 void MainWindow::OnRspUserLogin(CThostFtdcRspUserLoginField * pRspUserLogin, CThostFtdcRspInfoField * pRspInfo, int nRequestID, bool bIsLast){
@@ -706,7 +652,7 @@ int MainWindow::ReqQryTradingAccount(){
    strcpy_s(a.BrokerID, m_BrokerID);
    strcpy_s(a.InvestorID, m_InvestorID);
    strcpy_s(a.CurrencyID, "CNY");
-   return m_ptraderapi->ReqQryTradingAccount(&a, 5);
+   return m_tradeApi->ReqQryTradingAccount(&a, 5);
 }
 
 int MainWindow::qryInstrument(QString sInstrumentID)
@@ -716,7 +662,7 @@ int MainWindow::qryInstrument(QString sInstrumentID)
     std::string strt = sInstrumentID.toStdString();
     const char* str1 = strt.c_str();
     strcpy_s(t.InstrumentID, str1);
-    while (m_ptraderapi->ReqQryInstrument(&t, 6) != 0) {
+    while (m_tradeApi->ReqQryInstrument(&t, 6) != 0) {
         Sleep(1000);
 
     }
@@ -728,7 +674,7 @@ int MainWindow::qryInvestorPositon(){
     strcpy_s(a.BrokerID, m_BrokerID);
     strcpy_s(a.InvestorID, m_UserID);
     strcpy_s(a.InstrumentID, "");//不填写合约则返回所有持仓
-    return m_ptraderapi->ReqQryInvestorPosition(&a, 7);
+    return m_tradeApi->ReqQryInvestorPosition(&a, 7);
 }
 
 int MainWindow::QryOrder()
@@ -736,7 +682,7 @@ int MainWindow::QryOrder()
     CThostFtdcQryOrderField a = { 0 };
     strcpy_s(a.BrokerID, m_BrokerID);
     strcpy_s(a.InvestorID, m_InvestorID);
-    return m_ptraderapi->ReqQryOrder(&a, 8);
+    return m_tradeApi->ReqQryOrder(&a, 8);
 }
 
 int MainWindow::CancelOrder(CThostFtdcOrderField AOrder)
@@ -756,7 +702,7 @@ int MainWindow::CancelOrder(CThostFtdcOrderField AOrder)
     a.VolumeChange = 0;
     strcpy_s(a.UserID, m_UserID);
     strcpy_s(a.InstrumentID, AOrder.InstrumentID);
-    return m_ptraderapi->ReqOrderAction(&a, 9);
+    return m_tradeApi->ReqOrderAction(&a, 9);
 }
 
 
@@ -764,7 +710,7 @@ void MainWindow::ReqSettlementInfoConfirm(){
     CThostFtdcSettlementInfoConfirmField Confirm = { 0 };
     strcpy_s(Confirm.BrokerID, m_BrokerID);
     strcpy_s(Confirm.InvestorID, m_InvestorID);
-    m_ptraderapi->ReqSettlementInfoConfirm(&Confirm, 10);
+    m_tradeApi->ReqSettlementInfoConfirm(&Confirm, 10);
 }
 
 

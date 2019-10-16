@@ -52,7 +52,7 @@
     <string>密  码:</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="edt_user">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -62,7 +62,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="edt_password">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -82,7 +82,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="but_login">
    <property name="geometry">
     <rect>
      <x>40</x>
@@ -95,7 +95,7 @@
     <string>登陆</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="but_cancle">
    <property name="geometry">
     <rect>
      <x>220</x>
@@ -106,6 +106,19 @@
    </property>
    <property name="text">
     <string>取消</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="lbl_status">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>140</y>
+     <width>281</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>
