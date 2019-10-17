@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     Qt::WindowFlags    flags = dlgTableSize->windowFlags();
     dlgTableSize->setWindowFlags(flags | Qt::MSWindowsFixedSizeDialogHint); //设置对话框固定大小
 
-    dlgTableSize->setWindowTitle("设置基本信息");
+    dlgTableSize->setWindowTitle("用户登陆");
 
 
     int ret=dlgTableSize->exec();
