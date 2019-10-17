@@ -2,6 +2,7 @@
 #include "ui_logindialog.h"
 #include "traderspi.h"
 #include <QtDebug>
+#include "common.h"
 
 using std::string;
 
@@ -65,7 +66,7 @@ int LoginDialog::UserLogin(){
    QString sUserid = ui->edt_user->text();
    QString sPassWord = ui->edt_password->text();
 
-   strcpy_s(reqUserLogin.BrokerID, "9999");
+   strcpy_s(reqUserLogin.BrokerID, CTP_BrokerID);
    strcpy_s(reqUserLogin.UserID, sUserid.toStdString().c_str());
    strcpy_s(reqUserLogin.Password, sPassWord.toStdString().c_str());
    return m_tradeApi->ReqUserLogin(&reqUserLogin, 1);
@@ -76,22 +77,20 @@ int LoginDialog::Authenticate(){
     memset(&field, 0, sizeof(field));
     QString sUserid = ui->edt_user->text();
     QString sPassWord = ui->edt_password->text();
-    strcpy_s(field.BrokerID, "9999");
+    strcpy_s(field.BrokerID, CTP_BrokerID);
     strcpy_s(field.UserID, sUserid.toStdString().c_str());
-    strcpy_s(field.AppID, "simnow_client_test");
-    strcpy_s(field.AuthCode, "0000000000000000");
+    strcpy_s(field.AppID, CTP_APPID);
+    strcpy_s(field.AuthCode, CTP_AUTHCODE);
     return m_tradeApi->ReqAuthenticate(&field, 2);
 }
 
 void LoginDialog::on_but_login_clicked()
 {
     //this->setResult(QDialog::Accepted);
-    qDebug() << m_tradeApi;
+   qDebug() << m_tradeApi;
    qDebug() << m_tradeApi->GetApiVersion();
    if (m_TradeSpi->Status == LSDisconnected){
-       string chFrontaddr;
-       chFrontaddr = "tcp://180.168.146.187:10130";
-       m_tradeApi->RegisterFront(const_cast<char *>(chFrontaddr.c_str()));
+       m_tradeApi->RegisterFront(const_cast<char *>(CTP_FrontAddr));
        m_tradeApi->Init();
    }else{
         Authenticate();

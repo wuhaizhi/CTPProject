@@ -14,11 +14,11 @@ int main(int argc, char *argv[])
     CTraderSpi *C_TradeSpi= new CTraderSpi();
     qDebug() << C_TradeApi;
     QDir* aDir = new QDir();
-    if (!aDir->exists(".\\flow"))
+    if (!aDir->exists("flow"))
     {
-        aDir->mkdir(".\\flow");
+        aDir->mkdir("flow");
     }
-    C_TradeApi->CreateFtdcTraderApi(".\\flow");
+    C_TradeApi->CreateFtdcTraderApi("flow");
     C_TradeApi->RegisterSpi(C_TradeSpi);
     C_TradeApi->SubscribePublicTopic(THOST_TERT_QUICK);
     C_TradeApi->SubscribePrivateTopic(THOST_TERT_QUICK);

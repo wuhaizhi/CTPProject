@@ -33,6 +33,7 @@ SOURCES += \
         yg_config.cpp
 
 HEADERS += \
+        common.h \
         logindialog.h \
         main.h \
         mainwindow.h \
